@@ -29,7 +29,6 @@ export async function reIssueAccessToken({
 }: {
   refreshToken: string;
 }): Promise<any> {
-
   const { decoded } = verifyJWT(refreshToken);
   if (!refreshToken || !get(decoded, "session")) return false;
   const session = await Session.findById(get(decoded, "session"));
@@ -39,7 +38,6 @@ export async function reIssueAccessToken({
   const user = await findUser({ _id: session.user });
 
   if (!user) return false;
-
   const accessToken = signJWT(
     {
       ...user,

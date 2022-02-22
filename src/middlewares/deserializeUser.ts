@@ -13,10 +13,9 @@ export const deserializeUser = async (
       return res.status(400).json({ msg: "NOT Authorized. " });
     const accessToken = req.headers.authorization.split(" ")[1];
     const refreshToken = get(req, "headers.x-refresh");
-    if (!accessToken) {
-      return res.status(400).json({ msg: "NOT Authorized. " });
-    }
-    const { decoded, expired } = verifyJWT(accessToken);
+  
+    const { decoded, expired, message } = verifyJWT(accessToken);
+    if(message) return res.status(400).json({ message });
     if (decoded && !expired) {
       res.locals.user = decoded;
       return next();
@@ -30,7 +29,6 @@ export const deserializeUser = async (
       res.locals.user = result.decoded;
       return next();
     }
-    return next();
   } catch (e) {
     res.status(400).send(e);
   }
